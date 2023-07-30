@@ -19,6 +19,26 @@ void init_monitor(int, char *[]);
 void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
+// word_t expr(char *e, bool *success);
+
+//void test_expr() {
+//	FILE *fp = fopen("./tools/gen-expr/input.txt", "r");
+//	assert(fp != NULL);
+//	
+//	word_t result;
+//	char true_result[16];
+//	bool success = true;
+//	char testexpr[65535] = {};
+//	while (fscanf(fp, "%[0-9] %[^\n]%*c", true_result, testexpr) != EOF) {
+//		result = expr(testexpr, &success);
+//		if (success) {
+//			printf("True val:%s Cal val:%u\n",true_result, result);
+//		}
+//		else {
+//			printf("Bad expr\n");
+//		}
+//	}
+//}
 
 int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
@@ -27,7 +47,8 @@ int main(int argc, char *argv[]) {
 #else
   init_monitor(argc, argv);
 #endif
-
+	
+//	test_expr();
   /* Start engine. */
   engine_start();
 

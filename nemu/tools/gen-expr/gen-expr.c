@@ -31,8 +31,57 @@ static char *code_format =
 "  return 0; "
 "}";
 
+static uint32_t choose(uint32_t n) {
+	return rand() % 3;
+}
+
+static void gen_num() {
+	int num = rand() % 100;
+	if (buf[strlen(buf) - 1] == '/')
+		num++;
+	char str_num[10];
+	assert(sprintf(str_num, "%d", num) >= 0);
+	strncat(buf, str_num, strlen(str_num));
+}
+	
+static void gen(char c) {
+	char str_c[1];
+	str_c[0] = c;
+//	assert(sprintf(str_c, "%c", c) >= 0);
+	strncat(buf, str_c, 1);
+}
+
+static void gen_rand_op() {
+	char op[4] = {'+', '-', '*', '/'};
+	char rand_op[1];
+	rand_op[0] = op[rand() % 4];
+//	assert(sprintf(rand_op, "%c", op[rand() % 4]) >= 0);
+	strncat(buf, rand_op, 1);
+}
+
+static void gen_space() {
+	char space[1] = {" "};
+	strncat(buf, space, 1);
+}
+
 static void gen_rand_expr() {
-  buf[0] = '\0';
+	switch (choose(3)) {
+		case 0:
+			gen_num();
+			break;
+		case 1: 
+			gen('(');
+			gen_rand_expr();
+			gen(')');
+			break;
+		default:
+			gen_rand_expr();
+			gen_space();
+			gen_rand_op();
+			gen_space();
+			gen_rand_expr();
+			break;
+	}
 }
 
 int main(int argc, char *argv[]) {
@@ -44,6 +93,7 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
+		buf[0] = '\0';
     gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
@@ -53,7 +103,7 @@ int main(int argc, char *argv[]) {
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+    int ret = system("gcc /tmp/.code.c -Wall -Werror -o /tmp/.expr");
     if (ret != 0) continue;
 
     fp = popen("/tmp/.expr", "r");
