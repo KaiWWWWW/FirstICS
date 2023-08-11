@@ -17,13 +17,6 @@
 
 #define NR_WP 32
 
-typedef struct watchpoint {
-  int NO;
-  struct watchpoint *next;
-
-  /* TODO: Add more members if necessary */
-
-} WP;
 
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
@@ -40,4 +33,56 @@ void init_wp_pool() {
 }
 
 /* TODO: Implement the functionality of watchpoint */
+WP* new_wp() {
+	assert(free_ != NULL);
+	WP *new_watchpoint = free_;
+	free_ = free_->next;
+	new_watchpoint->next = head;
+	head = new_watchpoint;
+	return new_watchpoint;
+}
 
+void free_wp(int index) {
+	WP *wp = head;
+	if (wp->NO == index) {
+		head = wp->next;
+		wp->next = free_;
+		free_ = wp;
+	}
+	else {
+		while (wp->next->NO != index)
+			wp = wp->next;
+		assert(wp->next != NULL);
+		WP *temp = wp->next;
+		wp->next = wp->next->next;
+		temp->next = free_;
+		free_ = temp;
+	}
+}
+
+void watchpoint_display() {
+	WP *iter = head;
+	if (iter == NULL) printf("No watchpoint!\n");
+	else {
+		while (iter != NULL) {
+			printf("%2d: %8s	%8x\n", iter->NO, iter->name, iter->val);
+			iter = iter->next;
+		}
+	}
+}
+
+void if_wp_diff() {
+	WP *wp = head;
+	bool success = true;
+	word_t result = 0;
+	while (wp != NULL) {
+		result = expr(wp->name, &success);
+		if (result != wp->val) {
+			nemu_state.state = NEMU_STOP;
+			printf("Watchpoint %d %s:\n old: %8x, new: %8x\n",
+				wp->NO, wp->name, wp->val, result);
+			wp->val = result;
+		}
+		wp = wp->next;
+	}
+}

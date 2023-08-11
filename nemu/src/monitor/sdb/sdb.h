@@ -19,5 +19,20 @@
 #include <common.h>
 
 word_t expr(char *e, bool *success);
+word_t vaddr_read(vaddr_t addr, int len);
+void watchpoint_display();
+
+typedef struct watchpoint {
+  int NO;
+	word_t val;
+	char name[16];
+  struct watchpoint *next;
+  /* TODO: Add more members if necessary */
+
+} WP;
+
+WP* new_wp();
+void free_wp(int index);
 
 #endif
+
