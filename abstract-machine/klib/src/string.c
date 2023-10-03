@@ -37,17 +37,17 @@ size_t strlen(const char *s) {
 
 char *strcpy(char *dst, const char *src) {
   assert(dst != NULL && src != NULL);
-  unsigned char *ret = dst;
-  unsigned char *source = src;
+  unsigned char *ret = (unsigned char*)dst;
+  const unsigned char *source = (const unsigned char*)src;
   while ((*dst++ = *source ++) != '\0');
-  return ret;
+  return (char*)ret;
   // panic("Not implemented");
 }
 
 char *strncpy(char *dst, const char *src, size_t n) {
   assert(dst != NULL && src != NULL);
-  unsigned char *ret = dst;
-  const unsigned char *source = src;
+  unsigned char *ret = (unsigned char*)dst;
+  const unsigned char *source = (const unsigned char*)src;
   while (*source != '\0' && n > 0)
   {
     *dst++ = *source++;
@@ -58,7 +58,7 @@ char *strncpy(char *dst, const char *src, size_t n) {
     *dst++ = '\0';
     --n;
   }
-  return ret;
+  return (char*)ret;
   // panic("Not implemented");
 }
 
@@ -87,16 +87,17 @@ int strcmp(const char *s1, const char *s2) {
 
 int strncmp(const char *s1, const char *s2, size_t n) {
   assert(s1 != NULL && s2 != NULL);
-  const unsigned char *str1 = s1;
-  const unsigned char *str2 = s2;
+  const unsigned char *str1 = (const unsigned char*)s1;
+  const unsigned char *str2 = (const unsigned char*)s2;
   unsigned char c1, c2;
-  while (c1 == c2 && n-- > 0)
-  {
+  
+  do {
     c1 = (unsigned char) *str1++;
     c2 = (unsigned char) *str2++;
     if (c1 == '\0')
       return c1 - c2;
   }
+  while (c1 == c2 && --n > 0);
   return c1 - c2;
   // panic("Not implemented");
 }
@@ -116,7 +117,7 @@ void *memset(void *s, int c, size_t n) {
 void *memmove(void *dst, const void *src, size_t n) {
   assert(dst != NULL && src != NULL);
   unsigned char *dest = dst;
-  unsigned char *source = src;
+  const unsigned char *source = src;
   if (dst < src)
   {
     while (n-- > 0)
