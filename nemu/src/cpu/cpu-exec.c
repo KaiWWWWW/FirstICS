@@ -17,6 +17,7 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
+#include <itrace.h>
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -33,6 +34,7 @@ static bool g_print_step = false;
 void device_update();
 
 void if_wp_diff();
+
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
@@ -95,6 +97,7 @@ static void statistic() {
 }
 
 void assert_fail_msg() {
+  IFDEF(CONFIG_ITRACE, print_iring_buf());
   isa_reg_display();
   statistic();
 }
@@ -111,7 +114,9 @@ void cpu_exec(uint64_t n) {
 
   uint64_t timer_start = get_time();
 
+
   execute(n);
+
 
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
