@@ -13,3 +13,5 @@ typedef struct {
 
 void add_iring_buf(Decode *s);
 void print_iring_buf();
+
+void print_mtrace(paddr_t addr, int len, bool flag);

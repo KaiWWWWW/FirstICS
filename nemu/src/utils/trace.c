@@ -1,4 +1,4 @@
-#include <itrace.h>
+#include <trace.h>
 
 static IringBufInfo iring_buf[IRING_BUF_SIZE];
 static word_t iring_buf_index = IRING_BUF_SIZE;
@@ -37,5 +37,14 @@ void print_iring_buf() {
     disassemble(p, buf + sizeof(buf) - p,
         iring_buf[index].pc, (uint8_t *)&iring_buf[index].inst, ilen);
     puts(buf);
+  }
+}
+
+void print_mtrace(paddr_t addr, int len, bool flag) {
+  if (flag) {
+    printf("read memory at " FMT_WORD "  len = %d\n", addr, len);
+  }
+  else {
+    printf("write memory at " FMT_WORD "  len = %d\n", addr, len);
   }
 }
