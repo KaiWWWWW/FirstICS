@@ -5,7 +5,7 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-char* my_itoa(int value, char *str, int base)
+static char* my_itoa(int value, char* str, int base)
 {
   char *ret = str;
   if (value == 0)
@@ -59,28 +59,33 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     if (ap == NULL) break;
     else if (*str != '%') {
       *buf++ = *str++;
-      continue;
     }
-    switch (*str++)
-    {
-    case 'd':
-      int digital_val;
-      digital_val = va_arg(ap, int);
-      my_itoa(digital_val, buf, 10);
-      break;
-    
-    case 's':
-      char *str_val;
-      str_val = va_arg(ap, char *);
-      buf = strncpy(buf, str_val, strlen(str_val));
-      buf += strlen(str_val);
-      break;
+    else {
+      ++str;
+      switch (*str++)
+      {
+      case 'd':
+        int digital_val;
+        char str_digital[32];
+        digital_val = va_arg(ap, int);
+        my_itoa(digital_val, str_digital, 10);
+        buf = strncpy(buf, str_digital, strlen(str_digital));
+        buf += strlen(str_digital);
+        break;
+      
+      case 's':
+        char *str_val;
+        str_val = va_arg(ap, char *);
+        buf = strncpy(buf, str_val, strlen(str_val));
+        buf += strlen(str_val);
+        break;
 
-    default:
-      break;
+      default:
+        break;
+      }
     }
   }
-  
+  *buf = '\0';
   return buf - out;
   // panic("Not implemented");
 }

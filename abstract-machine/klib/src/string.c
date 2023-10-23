@@ -17,7 +17,7 @@ size_t strlen(const char *s) {
   }
 
   longword_ptr = (const unsigned long int *)char_ptr;
-  magic_bits = 0x7efefeffL;
+  magic_bits = 0x7efefefefefefeffL;
   
   while (1)
   {
@@ -30,6 +30,10 @@ size_t strlen(const char *s) {
       if (cp[1] == '\0') return cp - s + 1;
       if (cp[2] == '\0') return cp - s + 2;
       if (cp[3] == '\0') return cp - s + 3;
+      if (cp[4] == '\0') return cp - s + 4;
+      if (cp[5] == '\0') return cp - s + 5;
+      if (cp[6] == '\0') return cp - s + 6;
+      if (cp[7] == '\0') return cp - s + 7;
     }
   }
   // panic("Not implemented");
@@ -39,6 +43,7 @@ char *strcpy(char *dst, const char *src) {
   assert(dst != NULL && src != NULL);
   unsigned char *ret = (unsigned char*)dst;
   const unsigned char *source = (const unsigned char*)src;
+  
   while ((*dst++ = *source ++) != '\0');
   return (char*)ret;
   // panic("Not implemented");
@@ -48,11 +53,8 @@ char *strncpy(char *dst, const char *src, size_t n) {
   assert(dst != NULL && src != NULL);
   unsigned char *ret = (unsigned char*)dst;
   const unsigned char *source = (const unsigned char*)src;
-  while (*source != '\0' && n > 0)
-  {
-    *dst++ = *source++;
-    --n;
-  }
+
+  while ((*dst++ = *source++) != '\0' && (n-- > 0));
   while (n > 0)
   {
     *dst++ = '\0';
@@ -87,6 +89,7 @@ int strcmp(const char *s1, const char *s2) {
 
 int strncmp(const char *s1, const char *s2, size_t n) {
   assert(s1 != NULL && s2 != NULL);
+  if (n == 0) return 0;
   const unsigned char *str1 = (const unsigned char*)s1;
   const unsigned char *str2 = (const unsigned char*)s2;
   unsigned char c1, c2;
@@ -125,8 +128,8 @@ void *memmove(void *dst, const void *src, size_t n) {
   }
   else
   {
-    dest += n;
-    source += n;
+    dest += n - 1;
+    source += n - 1;
     while (n-- > 0)
       *dest-- = *source--;
   }
@@ -136,8 +139,8 @@ void *memmove(void *dst, const void *src, size_t n) {
 
 void *memcpy(void *out, const void *in, size_t n) {
   assert(out != NULL && in != NULL);
-  if (out > in) assert((in + n) >= out);
-  else assert((out + n) >= in);
+  // if (out > in) assert((in + n) >= out);
+  // else assert((out + n) >= in);
   unsigned char *dst = out;
   const unsigned char *src = in;
   while (n--) {
@@ -149,6 +152,7 @@ void *memcpy(void *out, const void *in, size_t n) {
 
 int memcmp(const void *s1, const void *s2, size_t n) {
   assert(s1 != NULL && s2 != NULL);
+  if (n == 0) return 0;
   const unsigned char *src1 = (const unsigned char*)s1;
   const unsigned char *src2 = (const unsigned char*)s2;
   unsigned char c1, c2;
@@ -156,9 +160,9 @@ int memcmp(const void *s1, const void *s2, size_t n) {
   do {
     c1 = (unsigned char) *src1++;
     c2 = (unsigned char) *src2++;
-    if (c1 == '\0') {
-      return c1 - c2;
-    }
+    // if (c1 == '\0') {
+    //   return c1 - c2;
+    // }
   }
   while (c1 == c2 && --n > 0);
   return c1 - c2;
