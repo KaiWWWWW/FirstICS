@@ -17,7 +17,8 @@ size_t strlen(const char *s) {
   }
 
   longword_ptr = (const unsigned long int *)char_ptr;
-  magic_bits = 0x7efefefefefefeffL;
+  magic_bits = 0x7efefeffL;
+  // magic_bits = 0x7efefefefefefeffL;
   
   while (1)
   {
@@ -30,10 +31,10 @@ size_t strlen(const char *s) {
       if (cp[1] == '\0') return cp - s + 1;
       if (cp[2] == '\0') return cp - s + 2;
       if (cp[3] == '\0') return cp - s + 3;
-      if (cp[4] == '\0') return cp - s + 4;
-      if (cp[5] == '\0') return cp - s + 5;
-      if (cp[6] == '\0') return cp - s + 6;
-      if (cp[7] == '\0') return cp - s + 7;
+      // if (cp[4] == '\0') return cp - s + 4;
+      // if (cp[5] == '\0') return cp - s + 5;
+      // if (cp[6] == '\0') return cp - s + 6;
+      // if (cp[7] == '\0') return cp - s + 7;
     }
   }
   // panic("Not implemented");

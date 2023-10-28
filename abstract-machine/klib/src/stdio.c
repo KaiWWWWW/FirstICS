@@ -47,7 +47,15 @@ static char* my_itoa(int value, char* str, int base)
 }
 
 int printf(const char *fmt, ...) {
-  panic("Not implemented");
+  char out[128];
+  va_list args;
+  int ret;
+  va_start(args, fmt);
+  ret = vsprintf(out, fmt, args);
+  va_end(args);
+  putstr(out);
+  return ret;
+  // panic("Not implemented");
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
