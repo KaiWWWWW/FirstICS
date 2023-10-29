@@ -61,6 +61,7 @@ int printf(const char *fmt, ...) {
 int vsprintf(char *out, const char *fmt, va_list ap) {
   char *buf = out;
   const char *str = fmt;
+  int width = 0;
 
   while (*str != '\0')
   {
@@ -70,15 +71,31 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     }
     else {
       ++str;
+      /* width */
+      if (*str == '0') {
+        str++;
+        if (*str <= '9' && *str > '0') {
+          width = *str - '0';
+          ++str;
+        }
+      }
+      /* type */
       switch (*str++)
       {
       case 'd':
         int digital_val;
         char str_digital[32];
+
         digital_val = va_arg(ap, int);
         my_itoa(digital_val, str_digital, 10);
-        buf = strncpy(buf, str_digital, strlen(str_digital));
-        buf += strlen(str_digital);
+
+        int digital_val_len = strlen(str_digital);
+        if (width > digital_val_len) {
+          memset(buf, '0', width - digital_val_len);
+          buf += (width - digital_val_len);
+        }
+        buf = strncpy(buf, str_digital, digital_val_len);
+        buf += digital_val_len;
         break;
       
       case 's':
@@ -87,10 +104,11 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
         buf = strncpy(buf, str_val, strlen(str_val));
         buf += strlen(str_val);
         break;
-
+      
       default:
         break;
       }
+      width = 0;
     }
   }
   *buf = '\0';
