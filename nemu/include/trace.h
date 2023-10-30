@@ -38,3 +38,7 @@ void print_mtrace(paddr_t addr, int len, bool flag);
 void parse_elf_file(const char *elf_file);
 void ftrace_func(word_t src_addr, word_t dst_addr, uint32_t i, word_t imm);
 #endif
+
+#ifdef CONFIG_DTRACE
+void func_dtrace(paddr_t addr, int len, const char *name, bool is_write);
+#endif

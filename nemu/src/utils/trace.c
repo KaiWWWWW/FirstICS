@@ -170,3 +170,14 @@ void ftrace_func(word_t src_addr, word_t dst_addr, uint32_t i, word_t imm)
   }
 }
 #endif
+
+#ifdef CONFIG_DTRACE
+void func_dtrace(paddr_t addr, int len, const char *name, bool is_write) {
+  if (is_write) {
+    printf("dtrace: write %10s at " FMT_PADDR " len = %d\n", name, addr, len);
+  }
+  else {
+    printf("dtrace: read %10s at " FMT_PADDR " len = %d\n", name, addr, len);
+  }
+}
+#endif
